@@ -2,6 +2,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import FUNDS, { type Fund } from './data/funds.ts';
 import { isNumber, isString } from './utils.ts';
 
@@ -90,29 +92,91 @@ const sortFunds = ({ funds, sortQuery }: { funds: ReadonlyArray<Fund>; sortQuery
     : funds;
 };
 
-// GET /funds - List with pagination
+/**
+ * @swagger
+ * /funds:
+ *   get:
+ *     summary: Retrieve a list of funds
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: The page number to retrieve
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: The number of funds to retrieve per page
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - 'name:asc'
+ *             - 'name:desc'
+ *             - 'currency:asc'
+ *             - 'currency:desc'
+ *             - 'value:asc'
+ *             - 'value:desc'
+ *             - 'category:asc'
+ *             - 'category:desc'
+ *             - 'profitability.YTD:asc'
+ *             - 'profitability.YTD:desc'
+ *             - 'profitability.oneYear:asc'
+ *             - 'profitability.oneYear:desc'
+ *             - 'profitability.threeYears:asc'
+ *             - 'profitability.threeYears:desc'
+ *             - 'profitability.fiveYears:asc'
+ *             - 'profitability.fiveYears:desc'
+ *         description: Sort order for the funds (e.g., 'name:asc')
+ *     responses:
+ *       200:
+ *         description: A list of funds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     totalFunds:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Fund'
+ */
 app.get('/funds', (req: Request, res: Response) => {
-  const funds = FUNDS;
-  const page = parseInt(req.query.page as string) ?? 1;
-  const limit = parseInt(req.query.limit as string) ?? 10;
+  const { page: pageQuery, limit: limitQuery, sort } = req.query;
+  const page = isString(pageQuery) ? parseInt(pageQuery, 10) : 1;
+  const limit = isString(limitQuery) ? parseInt(limitQuery, 10) : 10;
+
   if (page < 1 || limit < 1) {
     return res.status(400).json({ error: 'Invalid pagination parameters' });
   }
 
-  const sort = req.query.sort;
-
-  const computedFunds = isString(sort) ? sortFunds({ funds, sortQuery: sort }) : funds;
+  const sortedFunds = isString(sort) ? sortFunds({ funds: FUNDS, sortQuery: sort }) : FUNDS;
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  const paginatedFunds = computedFunds.slice(startIndex, endIndex);
+  const paginatedFunds = sortedFunds.slice(startIndex, endIndex);
 
   res.json({
     pagination: {
       page,
       limit,
-      totalFunds: funds.length,
-      totalPages: Math.ceil(funds.length / limit),
+      totalFunds: sortedFunds.length,
+      totalPages: Math.ceil(sortedFunds.length / limit),
     },
     data: paginatedFunds,
   });
@@ -135,10 +199,82 @@ const fundRoute = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-// GET /funds/:id - Fund details
+/**
+ * @swagger
+ * /funds/{id}:
+ *   get:
+ *     summary: Retrieve details of a specific fund
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the fund to retrieve
+ *     responses:
+ *       200:
+ *         description: Details of the fund
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Fund'
+ *       404:
+ *         description: Fund not found
+ */
 app.get('/funds/:id', fundRoute, (req: Request, res: Response) => res.json({ data: req.fund }));
 
-// POST /funds/:id/buy - Buy a fund
+/**
+ * @swagger
+ * /funds/{id}/buy:
+ *   post:
+ *     summary: Buy a quantity of a specific fund
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the fund to buy
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: number
+ *                 description: The quantity of the fund to buy
+ *     responses:
+ *       200:
+ *         description: Purchase successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     portfolio:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           quantity:
+ *                             type: number
+ *       400:
+ *         description: Invalid data
+ *       404:
+ *         description: Fund not found
+ */
 app.post('/funds/:id/buy', fundRoute, (req: Request, res: Response) => {
   const id = req.fund?.id;
   if (!id) return res.status(404).json({ error: 'Fund not found' });
@@ -158,7 +294,55 @@ app.post('/funds/:id/buy', fundRoute, (req: Request, res: Response) => {
   res.json({ message: 'Purchase successful', data: { portfolio } });
 });
 
-// POST /funds/:id/sell - Sell a fund
+/**
+ * @swagger
+ * /funds/{id}/sell:
+ *   post:
+ *     summary: Sell a quantity of a specific fund
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the fund to sell
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: number
+ *                 description: The quantity of the fund to sell
+ *     responses:
+ *       200:
+ *         description: Sale successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     portfolio:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           quantity:
+ *                             type: number
+ *       400:
+ *         description: Not enough units to sell
+ *       404:
+ *         description: Fund not found
+ */
 app.post('/funds/:id/sell', fundRoute, (req: Request, res: Response) => {
   const id = req.params.id;
   const { quantity } = req.body;
@@ -176,7 +360,54 @@ app.post('/funds/:id/sell', fundRoute, (req: Request, res: Response) => {
   res.json({ message: 'Sale successful', data: { portfolio } });
 });
 
-// POST /transfer - Transfer between funds
+/**
+ * @swagger
+ * /funds/transfer:
+ *   post:
+ *     summary: Transfer a quantity from one fund to another
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fromFundId:
+ *                 type: string
+ *                 description: The ID of the fund to transfer from
+ *               toFundId:
+ *                 type: string
+ *                 description: The ID of the fund to transfer to
+ *               quantity:
+ *                 type: number
+ *                 description: The quantity to transfer
+ *     responses:
+ *       200:
+ *         description: Transfer successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     portfolio:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           quantity:
+ *                             type: number
+ *       400:
+ *         description: Invalid data
+ *       404:
+ *         description: Fund not found
+ */
 app.post('/funds/transfer', (req: Request, res: Response) => {
   const { fromFundId, toFundId, quantity } = req.body;
   if (!fromFundId || !toFundId || !quantity || quantity <= 0) {
@@ -212,7 +443,33 @@ app.post('/funds/transfer', (req: Request, res: Response) => {
   res.json({ message: 'Transfer successful', data: { portfolio } });
 });
 
-// GET /portfolio - View current portfolio
+/**
+ * @swagger
+ * /portfolio:
+ *   get:
+ *     summary: Retrieve the current portfolio
+ *     responses:
+ *       200:
+ *         description: The current portfolio
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       quantity:
+ *                         type: number
+ *                       totalValue:
+ *                         type: number
+ */
 app.get('/portfolio', (req: Request, res: Response) => {
   const detailedPortfolio = portfolio.map((p) => {
     const fund = getFundById(p.id);
@@ -229,4 +486,74 @@ app.get('/portfolio', (req: Request, res: Response) => {
 // Start server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+});
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'My Investor API',
+      version: '1.0.0',
+      description: 'API for managing funds and portfolios',
+    },
+    components: {
+      schemas: {
+        Fund: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+            },
+            name: {
+              type: 'string',
+            },
+            currency: {
+              type: 'string',
+              enum: ['USD', 'EUR'],
+            },
+            symbol: {
+              type: 'string',
+            },
+            value: {
+              type: 'number',
+            },
+            category: {
+              type: 'string',
+              enum: ['GLOBAL', 'TECH', 'HEALTH', 'MONEY_MARKET'],
+            },
+            profitability: {
+              type: 'object',
+              properties: {
+                YTD: {
+                  type: 'number',
+                },
+                oneYear: {
+                  type: 'number',
+                },
+                threeYears: {
+                  type: 'number',
+                },
+                fiveYears: {
+                  type: 'number',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  apis: ['./server/app.ts'],
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+const swaggerApp = express();
+const swaggerPort = 3001;
+
+swaggerApp.use(cors());
+swaggerApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+swaggerApp.listen(swaggerPort, () => {
+  console.log(`Swagger UI running at http://localhost:${swaggerPort}/api-docs`);
 });
