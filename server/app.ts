@@ -1,8 +1,9 @@
-import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
+import cors from 'cors';
+import type { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import FUNDS, { type Fund } from './data/funds.ts';
-import type { Request, Response, NextFunction } from 'express';
+import { isNumber, isString } from './utils.ts';
 
 const app = express();
 const port = 3000;
@@ -26,19 +27,85 @@ interface PortfolioItem {
 // In-memory portfolio
 let portfolio: PortfolioItem[] = [];
 
+const SORT_DIRECTION = {
+  ASC: 'asc',
+  DESC: 'desc',
+} as const;
+
+type SortDirection = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION];
+
+const isSortDirection = (direction: any): direction is SortDirection =>
+  [SORT_DIRECTION.ASC, SORT_DIRECTION.DESC].includes(direction);
+
+const isProfitabilityField = (
+  field: string
+): field is `profitability.${keyof Fund['profitability']}` => field.startsWith('profitability.');
+
+const sortFunds = ({ funds, sortQuery }: { funds: ReadonlyArray<Fund>; sortQuery: string }) => {
+  const [field, sort = SORT_DIRECTION.ASC] = sortQuery.split(':');
+  const validFieldsToSort = [
+    'name',
+    'currency',
+    'value',
+    'category',
+    'profitability.YTD',
+    'profitability.oneYear',
+    'profitability.threeYears',
+    'profitability.fiveYears',
+  ];
+
+  const sortString = (values: [string, string], sort: SortDirection) => {
+    return sort === SORT_DIRECTION.ASC
+      ? values[0].localeCompare(values[1])
+      : values[1].localeCompare(values[0]);
+  };
+  const sortNumber = (values: [number, number], sort: SortDirection) => {
+    return sort === SORT_DIRECTION.ASC ? values[0] - values[1] : values[1] - values[0];
+  };
+
+  return field && isSortDirection(sort) && validFieldsToSort.includes(field)
+    ? funds.toSorted((fundA, fundB) => {
+        if (isProfitabilityField(field)) {
+          const subKey = field.split('.')[1] as keyof Fund['profitability'];
+          const valueA = fundA.profitability[subKey];
+          const valueB = fundB.profitability[subKey];
+
+          return sortNumber([valueA, valueB], sort);
+        } else {
+          const key = field as keyof Fund;
+          const valueA = fundA[key];
+          const valueB = fundB[key];
+
+          if (isString(valueA) && isString(valueB)) {
+            return sortString([valueA, valueB], sort);
+          }
+
+          if (isNumber(valueA) && isNumber(valueB)) {
+            return sortNumber([valueA, valueB], sort);
+          }
+
+          return 0;
+        }
+      })
+    : funds;
+};
+
 // GET /funds - List with pagination
 app.get('/funds', (req: Request, res: Response) => {
   const funds = FUNDS;
   const page = parseInt(req.query.page as string) ?? 1;
   const limit = parseInt(req.query.limit as string) ?? 10;
-
   if (page < 1 || limit < 1) {
     return res.status(400).json({ error: 'Invalid pagination parameters' });
   }
 
+  const sort = req.query.sort;
+
+  const computedFunds = isString(sort) ? sortFunds({ funds, sortQuery: sort }) : funds;
+
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  const paginatedFunds = funds.slice(startIndex, endIndex);
+  const paginatedFunds = computedFunds.slice(startIndex, endIndex);
 
   res.json({
     pagination: {
@@ -147,13 +214,13 @@ app.post('/funds/transfer', (req: Request, res: Response) => {
 
 // GET /portfolio - View current portfolio
 app.get('/portfolio', (req: Request, res: Response) => {
-  const detailedPortfolio = portfolio.map(p => {
+  const detailedPortfolio = portfolio.map((p) => {
     const fund = getFundById(p.id);
     return {
       id: p.id,
       name: fund?.name,
       quantity: p.quantity,
-      totalValue: p.quantity * (fund?.value ?? 0)
+      totalValue: p.quantity * (fund?.value ?? 0),
     };
   });
   res.json({ data: detailedPortfolio });

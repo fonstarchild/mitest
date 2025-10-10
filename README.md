@@ -33,7 +33,6 @@ Esta prueba **no esta pensada para que sea terminada en el tiempo que indicamos*
 
 1. Un repositorio en GitHub (público o privado con acceso compartido)
 2. Un archivo `README.md` explicando:
-
    - Cómo correr el proyecto localmente
    - Decisiones técnicas tomadas
    - Funcionalidades implementadas
@@ -80,8 +79,7 @@ Genera un tabla en la que se muestren todos los fondos, similar a la que aparece
 💡 Bonus:
 
 - Paginación
-- Paginación
-- Ordenación de elementos al hacer click en la cabecera (ASC, DESC)
+- Ordenación de elementos al hacer click en la cabecera (asc, desc)
 - Diseño responsive
 
 ### Acción de comprar
@@ -91,11 +89,10 @@ Añadir la posibilidad de realizar una compra de un fondo desde el listado. En e
 💡 Bonus:
 
 - Validación de formularios:
-    - No poder realizar compras superiores a 10.000 €
-    - No poder realizar compras con valores negativos
+  - No poder realizar compras superiores a 10.000 €
+  - No poder realizar compras con valores negativos
 - Uso de la etiqueta [dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog) de HTML
 - Añadir un componente "input" que formateé la cantidad introducida. Por ejemplo "10,55 €".
-
 
 ### Detalle de la cartera
 
@@ -106,6 +103,7 @@ Generar una sección o pantalla, en la que se muestren todas la posiciones que t
 ![portfolio action](./public/portfolio-desktop-actions.png)
 
 💡 Bonus:
+
 - Ordenación por orden alfabetico
 - Categorización por tipo de fondo
 - Diseño responsive
@@ -119,8 +117,8 @@ Añadir la posibilidad de realizar una venta de un fondo desde el listado.
 💡 Bonus:
 
 - Validación de formularios:
-    - Limitar la venta por una cantidad superior a la posición
-    - No poder realizar ventas con valores negativos
+  - Limitar la venta por una cantidad superior a la posición
+  - No poder realizar ventas con valores negativos
 
 ## Acción de traspasar
 
@@ -129,7 +127,7 @@ Añadir la posibilidad de realizar una traspaso entre fondos.
 💡 Bonus:
 
 - Validación de formularios:
-    - Limitar el traspaso por una cantidad superior a la posición
-    - No poder realizar traspasos con valores negativos
-    - No se puede traspasar al mismo fondo
-    - Solo se debe permitir traspasar entre fondos ya comprados.
+  - Limitar el traspaso por una cantidad superior a la posición
+  - No poder realizar traspasos con valores negativos
+  - No se puede traspasar al mismo fondo
+  - Solo se debe permitir traspasar entre fondos ya comprados.
