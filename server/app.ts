@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import FUNDS, { type Fund } from './data/funds.ts';
+import FUNDS, { type Fund, type Amount } from './data/funds.ts';
 import { isNumber, isString } from './utils.ts';
 
 const app = express();
@@ -73,6 +73,10 @@ const sortFunds = ({ funds, sortQuery }: { funds: ReadonlyArray<Fund>; sortQuery
           const valueB = fundB.profitability[subKey];
 
           return sortNumber([valueA, valueB], sort);
+        } else if (field === 'value') {
+          return sortNumber([fundA.value.amount, fundB.value.amount], sort);
+        } else if (field === 'currency') {
+          return sortString([fundA.value.currency, fundB.value.currency], sort);
         } else {
           const key = field as keyof Fund;
           const valueA = fundA[key];
@@ -185,7 +189,7 @@ app.get('/funds', (req: Request, res: Response) => {
 const getFundById = (id: string): Fund | undefined => FUNDS.find((f) => f.id === id);
 
 const fundRoute = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.params.id) {
+  if (!req.params.id || !isString(req.params.id)) {
     return res.status(400).json({ error: 'Invalid fund ID' });
   }
 
@@ -468,18 +472,28 @@ app.post('/funds/transfer', (req: Request, res: Response) => {
  *                       quantity:
  *                         type: number
  *                       totalValue:
- *                         type: number
+ *                         type: object
+ *                         properties:
+ *                           amount:
+ *                             type: number
+ *                           currency:
+ *                             type: string
+ *                             enum: ['USD', 'EUR']
  */
 app.get('/portfolio', (req: Request, res: Response) => {
-  const detailedPortfolio = portfolio.map((p) => {
-    const fund = getFundById(p.id);
-    return {
-      id: p.id,
-      name: fund?.name,
-      quantity: p.quantity,
-      totalValue: p.quantity * (fund?.value ?? 0),
-    };
-  });
+  const detailedPortfolio = portfolio
+    .map(({ id: fundId, quantity }) => {
+      const fund = getFundById(fundId);
+      if (!fund) return;
+      const { value, name, id } = fund;
+      return {
+        id,
+        name,
+        quantity: quantity,
+        totalValue: { amount: quantity * value.amount, currency: value.currency },
+      };
+    })
+    .filter(Boolean);
   res.json({ data: detailedPortfolio });
 });
 
@@ -496,6 +510,12 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API for managing funds and portfolios',
     },
+    servers: [
+      {
+        url: `http://localhost:${port}`,
+        description: 'Local development server',
+      },
+    ],
     components: {
       schemas: {
         Fund: {
@@ -507,15 +527,20 @@ const swaggerOptions = {
             name: {
               type: 'string',
             },
-            currency: {
-              type: 'string',
-              enum: ['USD', 'EUR'],
-            },
             symbol: {
               type: 'string',
             },
             value: {
-              type: 'number',
+              type: 'object',
+              properties: {
+                amount: {
+                  type: 'number',
+                },
+                currency: {
+                  type: 'string',
+                  enum: ['USD', 'EUR'],
+                },
+              },
             },
             category: {
               type: 'string',

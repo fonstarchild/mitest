@@ -3,16 +3,22 @@ type Profitability = Readonly<{
   oneYear: number;
   threeYears: number;
   fiveYears: number;
-}>
+}>;
 
 type Category = 'GLOBAL' | 'TECH' | 'HEALTH' | 'MONEY_MARKET';
+
+type Currency = 'EUR' | 'USD';
+
+export type Amount = Readonly<{
+  currency: Currency;
+  amount: number;
+}>;
 
 export type Fund = Readonly<{
   id: string;
   name: string;
-  currency: 'USD' | 'EUR';
   symbol: string;
-  value: number;
+  value: Amount;
   category: Category;
   profitability: Profitability;
 }>;
@@ -22,8 +28,10 @@ export default [
     id: '1',
     name: 'Global Equity Fund',
     symbol: 'GEF',
-    value: 120.45,
-    currency: 'USD',
+    value: {
+      amount: 120.45,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.05,
@@ -36,8 +44,10 @@ export default [
     id: '2',
     name: 'Tech Growth Fund',
     symbol: 'TGF',
-    value: 210.32,
-    currency: 'EUR',
+    value: {
+      amount: 210.32,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.08,
@@ -50,8 +60,10 @@ export default [
     id: '3',
     name: 'Healthcare Opportunities',
     symbol: 'HCO',
-    value: 145.9,
-    currency: 'USD',
+    value: {
+      amount: 145.9,
+      currency: 'EUR',
+    },
     category: 'HEALTH',
     profitability: {
       YTD: 0.03,
@@ -64,8 +76,10 @@ export default [
     id: '4',
     name: 'Energy Sector Fund',
     symbol: 'ESF',
-    value: 98.67,
-    currency: 'EUR',
+    value: {
+      amount: 98.67,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: -0.02,
@@ -78,8 +92,10 @@ export default [
     id: '5',
     name: 'Emerging Markets Equity',
     symbol: 'EME',
-    value: 130.21,
-    currency: 'USD',
+    value: {
+      amount: 130.21,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.06,
@@ -92,8 +108,10 @@ export default [
     id: '6',
     name: 'US Small Cap Fund',
     symbol: 'USC',
-    value: 110.12,
-    currency: 'EUR',
+    value: {
+      amount: 110.12,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.04,
@@ -106,8 +124,10 @@ export default [
     id: '7',
     name: 'Real Estate Income',
     symbol: 'REI',
-    value: 88.45,
-    currency: 'USD',
+    value: {
+      amount: 88.45,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.07,
@@ -120,8 +140,10 @@ export default [
     id: '8',
     name: 'International Value',
     symbol: 'IVF',
-    value: 132.77,
-    currency: 'EUR',
+    value: {
+      amount: 132.77,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.02,
@@ -134,8 +156,10 @@ export default [
     id: '9',
     name: 'Dividend Leaders Fund',
     symbol: 'DLF',
-    value: 102.54,
-    currency: 'USD',
+    value: {
+      amount: 102.54,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.09,
@@ -148,8 +172,10 @@ export default [
     id: '10',
     name: 'Bond Index Fund',
     symbol: 'BIF',
-    value: 50.12,
-    currency: 'EUR',
+    value: {
+      amount: 50.12,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.01,
@@ -162,8 +188,10 @@ export default [
     id: '11',
     name: 'Global Infrastructure',
     symbol: 'GIF',
-    value: 93.65,
-    currency: 'USD',
+    value: {
+      amount: 93.65,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.05,
@@ -176,8 +204,10 @@ export default [
     id: '12',
     name: 'Financial Sector Fund',
     symbol: 'FSF',
-    value: 127.43,
-    currency: 'EUR',
+    value: {
+      amount: 127.43,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.04,
@@ -190,8 +220,10 @@ export default [
     id: '13',
     name: 'Clean Energy Fund',
     symbol: 'CEF',
-    value: 151.89,
-    currency: 'USD',
+    value: {
+      amount: 151.89,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.11,
@@ -204,8 +236,10 @@ export default [
     id: '14',
     name: 'AI & Robotics Fund',
     symbol: 'AIR',
-    value: 212.3,
-    currency: 'EUR',
+    value: {
+      amount: 212.3,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.15,
@@ -218,8 +252,10 @@ export default [
     id: '15',
     name: 'Global Balanced Fund',
     symbol: 'GBF',
-    value: 100.01,
-    currency: 'USD',
+    value: {
+      amount: 100.01,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.06,
@@ -232,8 +268,10 @@ export default [
     id: '16',
     name: 'Luxury Goods Equity',
     symbol: 'LGE',
-    value: 175.42,
-    currency: 'EUR',
+    value: {
+      amount: 175.42,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.08,
@@ -246,8 +284,10 @@ export default [
     id: '17',
     name: 'US Blue Chip Fund',
     symbol: 'UBC',
-    value: 144.9,
-    currency: 'USD',
+    value: {
+      amount: 144.9,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.07,
@@ -260,8 +300,10 @@ export default [
     id: '18',
     name: 'Asia Pacific Equity',
     symbol: 'APE',
-    value: 122.33,
-    currency: 'EUR',
+    value: {
+      amount: 122.33,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.03,
@@ -274,8 +316,10 @@ export default [
     id: '19',
     name: 'Consumer Staples Fund',
     symbol: 'CSF',
-    value: 88.9,
-    currency: 'USD',
+    value: {
+      amount: 88.9,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.04,
@@ -288,8 +332,10 @@ export default [
     id: '20',
     name: 'Water Resources Fund',
     symbol: 'WRF',
-    value: 136.12,
-    currency: 'EUR',
+    value: {
+      amount: 136.12,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.05,
@@ -302,8 +348,10 @@ export default [
     id: '21',
     name: 'Defense & Aerospace',
     symbol: 'DAF',
-    value: 198.77,
-    currency: 'USD',
+    value: {
+      amount: 198.77,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.09,
@@ -316,8 +364,10 @@ export default [
     id: '22',
     name: 'Cybersecurity Fund',
     symbol: 'CSY',
-    value: 189.23,
-    currency: 'EUR',
+    value: {
+      amount: 189.23,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.12,
@@ -330,8 +380,10 @@ export default [
     id: '23',
     name: 'Luxury Real Estate',
     symbol: 'LRE',
-    value: 155.5,
-    currency: 'USD',
+    value: {
+      amount: 155.5,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.06,
@@ -344,8 +396,10 @@ export default [
     id: '24',
     name: 'Space Technology',
     symbol: 'STC',
-    value: 134.89,
-    currency: 'EUR',
+    value: {
+      amount: 134.89,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.18,
@@ -358,8 +412,10 @@ export default [
     id: '25',
     name: 'US Treasury Bond Fund',
     symbol: 'UTB',
-    value: 99.99,
-    currency: 'USD',
+    value: {
+      amount: 99.99,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.02,
@@ -372,8 +428,10 @@ export default [
     id: '26',
     name: 'Agriculture Index Fund',
     symbol: 'AIF',
-    value: 112.48,
-    currency: 'EUR',
+    value: {
+      amount: 112.48,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.07,
@@ -386,8 +444,10 @@ export default [
     id: '27',
     name: 'European Growth Fund',
     symbol: 'EGF',
-    value: 145.78,
-    currency: 'USD',
+    value: {
+      amount: 145.78,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.05,
@@ -400,8 +460,10 @@ export default [
     id: '28',
     name: 'Emerging Tech Fund',
     symbol: 'ETF',
-    value: 213.67,
-    currency: 'EUR',
+    value: {
+      amount: 213.67,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.14,
@@ -414,8 +476,10 @@ export default [
     id: '29',
     name: 'Global Consumer Fund',
     symbol: 'GCF',
-    value: 108.56,
-    currency: 'USD',
+    value: {
+      amount: 108.56,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.04,
@@ -428,8 +492,10 @@ export default [
     id: '30',
     name: 'Mining & Metals Fund',
     symbol: 'MMF',
-    value: 94.32,
-    currency: 'EUR',
+    value: {
+      amount: 94.32,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.01,
@@ -442,8 +508,10 @@ export default [
     id: '31',
     name: 'Renewable Power Fund',
     symbol: 'RPF',
-    value: 142.18,
-    currency: 'USD',
+    value: {
+      amount: 142.18,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.09,
@@ -456,8 +524,10 @@ export default [
     id: '32',
     name: 'Blockchain Innovators',
     symbol: 'BCI',
-    value: 230.11,
-    currency: 'EUR',
+    value: {
+      amount: 230.11,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.22,
@@ -470,8 +540,10 @@ export default [
     id: '33',
     name: 'Fintech Opportunities',
     symbol: 'FTO',
-    value: 186.77,
-    currency: 'USD',
+    value: {
+      amount: 186.77,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.16,
@@ -484,8 +556,10 @@ export default [
     id: '34',
     name: 'Global Dividend Fund',
     symbol: 'GDF',
-    value: 104.99,
-    currency: 'EUR',
+    value: {
+      amount: 104.99,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.06,
@@ -498,8 +572,10 @@ export default [
     id: '35',
     name: 'US Mid Cap Growth',
     symbol: 'UMG',
-    value: 123.45,
-    currency: 'USD',
+    value: {
+      amount: 123.45,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.08,
@@ -512,8 +588,10 @@ export default [
     id: '36',
     name: 'ESG Leaders Fund',
     symbol: 'ESG',
-    value: 117.65,
-    currency: 'EUR',
+    value: {
+      amount: 117.65,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.07,
@@ -526,8 +604,10 @@ export default [
     id: '37',
     name: 'Luxury Lifestyle Fund',
     symbol: 'LLF',
-    value: 176.34,
-    currency: 'USD',
+    value: {
+      amount: 176.34,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.1,
@@ -540,8 +620,10 @@ export default [
     id: '38',
     name: 'Latin America Fund',
     symbol: 'LAF',
-    value: 109.23,
-    currency: 'EUR',
+    value: {
+      amount: 109.23,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.02,
@@ -554,8 +636,10 @@ export default [
     id: '39',
     name: 'Private Equity Access',
     symbol: 'PEA',
-    value: 212.87,
-    currency: 'USD',
+    value: {
+      amount: 212.87,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.13,
@@ -568,8 +652,10 @@ export default [
     id: '40',
     name: 'Global Tech Titans',
     symbol: 'GTT',
-    value: 224.9,
-    currency: 'EUR',
+    value: {
+      amount: 224.9,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.17,
@@ -582,8 +668,10 @@ export default [
     id: '41',
     name: 'Natural Resources Fund',
     symbol: 'NRF',
-    value: 90.11,
-    currency: 'USD',
+    value: {
+      amount: 90.11,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.03,
@@ -596,8 +684,10 @@ export default [
     id: '42',
     name: 'Insurance Equity Fund',
     symbol: 'IEF',
-    value: 128.76,
-    currency: 'EUR',
+    value: {
+      amount: 128.76,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.05,
@@ -610,8 +700,10 @@ export default [
     id: '43',
     name: 'Transportation Growth',
     symbol: 'TGF',
-    value: 119.85,
-    currency: 'USD',
+    value: {
+      amount: 119.85,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.06,
@@ -624,8 +716,10 @@ export default [
     id: '44',
     name: 'Digital Commerce Fund',
     symbol: 'DCF',
-    value: 147.99,
-    currency: 'EUR',
+    value: {
+      amount: 147.99,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.11,
@@ -638,8 +732,10 @@ export default [
     id: '45',
     name: 'US Infrastructure Fund',
     symbol: 'UIF',
-    value: 105.88,
-    currency: 'USD',
+    value: {
+      amount: 105.88,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.04,
@@ -652,8 +748,10 @@ export default [
     id: '46',
     name: 'Global High Yield',
     symbol: 'GHY',
-    value: 112.1,
-    currency: 'EUR',
+    value: {
+      amount: 112.1,
+      currency: 'EUR',
+    },
     category: 'MONEY_MARKET',
     profitability: {
       YTD: 0.03,
@@ -666,8 +764,10 @@ export default [
     id: '47',
     name: 'Food Innovation Fund',
     symbol: 'FIF',
-    value: 133.56,
-    currency: 'USD',
+    value: {
+      amount: 133.56,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.08,
@@ -680,8 +780,10 @@ export default [
     id: '48',
     name: 'eSports & Gaming Fund',
     symbol: 'EGF',
-    value: 198.24,
-    currency: 'EUR',
+    value: {
+      amount: 198.24,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.16,
@@ -694,8 +796,10 @@ export default [
     id: '49',
     name: 'High Tech Materials',
     symbol: 'HTM',
-    value: 157.43,
-    currency: 'USD',
+    value: {
+      amount: 157.43,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.09,
@@ -708,8 +812,10 @@ export default [
     id: '50',
     name: 'Cloud Computing Fund',
     symbol: 'CCF',
-    value: 202.77,
-    currency: 'EUR',
+    value: {
+      amount: 202.77,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.15,
@@ -722,8 +828,10 @@ export default [
     id: '51',
     name: 'Pet Care Equity',
     symbol: 'PCE',
-    value: 123.12,
-    currency: 'USD',
+    value: {
+      amount: 123.12,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.07,
@@ -736,8 +844,10 @@ export default [
     id: '52',
     name: 'Green Transport Fund',
     symbol: 'GTF',
-    value: 166.89,
-    currency: 'EUR',
+    value: {
+      amount: 166.89,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.12,
@@ -750,8 +860,10 @@ export default [
     id: '53',
     name: 'Middle East Equity',
     symbol: 'MEE',
-    value: 115.23,
-    currency: 'USD',
+    value: {
+      amount: 115.23,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.04,
@@ -764,8 +876,10 @@ export default [
     id: '54',
     name: 'Luxury Travel Fund',
     symbol: 'LTF',
-    value: 172.1,
-    currency: 'EUR',
+    value: {
+      amount: 172.1,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.09,
@@ -778,8 +892,10 @@ export default [
     id: '55',
     name: 'Smart Cities Fund',
     symbol: 'SCF',
-    value: 141.77,
-    currency: 'USD',
+    value: {
+      amount: 141.77,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.08,
@@ -792,8 +908,10 @@ export default [
     id: '56',
     name: 'AI Revolution Fund',
     symbol: 'AIR',
-    value: 245.67,
-    currency: 'EUR',
+    value: {
+      amount: 245.67,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.2,
@@ -806,8 +924,10 @@ export default [
     id: '57',
     name: 'Ocean Economy Fund',
     symbol: 'OEF',
-    value: 137.89,
-    currency: 'USD',
+    value: {
+      amount: 137.89,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.06,
@@ -820,8 +940,10 @@ export default [
     id: '58',
     name: 'Advanced Materials',
     symbol: 'ADM',
-    value: 118.55,
-    currency: 'EUR',
+    value: {
+      amount: 118.55,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.05,
@@ -834,8 +956,10 @@ export default [
     id: '59',
     name: 'China Consumer Fund',
     symbol: 'CCF',
-    value: 125.45,
-    currency: 'USD',
+    value: {
+      amount: 125.45,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.02,
@@ -848,8 +972,10 @@ export default [
     id: '60',
     name: 'Genomics Innovation',
     symbol: 'GIN',
-    value: 230.76,
-    currency: 'EUR',
+    value: {
+      amount: 230.76,
+      currency: 'EUR',
+    },
     category: 'HEALTH',
     profitability: {
       YTD: 0.18,
@@ -862,8 +988,10 @@ export default [
     id: '61',
     name: 'Electric Vehicle Fund',
     symbol: 'EVF',
-    value: 198.55,
-    currency: 'USD',
+    value: {
+      amount: 198.55,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.13,
@@ -876,8 +1004,10 @@ export default [
     id: '62',
     name: 'Satellite Tech Fund',
     symbol: 'STF',
-    value: 214.34,
-    currency: 'EUR',
+    value: {
+      amount: 214.34,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.16,
@@ -890,8 +1020,10 @@ export default [
     id: '63',
     name: 'Space Exploration Fund',
     symbol: 'SEF',
-    value: 233.22,
-    currency: 'USD',
+    value: {
+      amount: 233.22,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.21,
@@ -904,8 +1036,10 @@ export default [
     id: '64',
     name: 'Digital Payments Fund',
     symbol: 'DPF',
-    value: 165.12,
-    currency: 'EUR',
+    value: {
+      amount: 165.12,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.1,
@@ -918,8 +1052,10 @@ export default [
     id: '65',
     name: 'Global Internet Fund',
     symbol: 'GIF',
-    value: 176.43,
-    currency: 'USD',
+    value: {
+      amount: 176.43,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.11,
@@ -932,8 +1068,10 @@ export default [
     id: '66',
     name: 'Mobile Economy Fund',
     symbol: 'MEF',
-    value: 129,
-    currency: 'EUR',
+    value: {
+      amount: 129,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.08,
@@ -946,8 +1084,10 @@ export default [
     id: '67',
     name: 'Women in Leadership',
     symbol: 'WIL',
-    value: 139.99,
-    currency: 'USD',
+    value: {
+      amount: 139.99,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.09,
@@ -960,8 +1100,10 @@ export default [
     id: '68',
     name: 'Youth Innovation Fund',
     symbol: 'YIF',
-    value: 124.89,
-    currency: 'EUR',
+    value: {
+      amount: 124.89,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.12,
@@ -974,8 +1116,10 @@ export default [
     id: '69',
     name: 'Circular Economy Fund',
     symbol: 'CEF',
-    value: 158.22,
-    currency: 'USD',
+    value: {
+      amount: 158.22,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.1,
@@ -988,8 +1132,10 @@ export default [
     id: '70',
     name: 'Digital Infrastructure',
     symbol: 'DIF',
-    value: 190.31,
-    currency: 'EUR',
+    value: {
+      amount: 190.31,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.14,
@@ -1002,8 +1148,10 @@ export default [
     id: '71',
     name: 'Africa Growth Fund',
     symbol: 'AGF',
-    value: 112.76,
-    currency: 'USD',
+    value: {
+      amount: 112.76,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.03,
@@ -1016,8 +1164,10 @@ export default [
     id: '72',
     name: 'Global Healthcare Fund',
     symbol: 'GHF',
-    value: 145.67,
-    currency: 'EUR',
+    value: {
+      amount: 145.67,
+      currency: 'EUR',
+    },
     category: 'HEALTH',
     profitability: {
       YTD: 0.07,
@@ -1030,8 +1180,10 @@ export default [
     id: '73',
     name: 'Smart Agriculture Fund',
     symbol: 'SAF',
-    value: 134.45,
-    currency: 'USD',
+    value: {
+      amount: 134.45,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.06,
@@ -1044,8 +1196,10 @@ export default [
     id: '74',
     name: 'Urban Development Fund',
     symbol: 'UDF',
-    value: 121.89,
-    currency: 'EUR',
+    value: {
+      amount: 121.89,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.05,
@@ -1058,8 +1212,10 @@ export default [
     id: '75',
     name: 'Global Luxury Brands',
     symbol: 'GLB',
-    value: 198.99,
-    currency: 'USD',
+    value: {
+      amount: 198.99,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.11,
@@ -1072,8 +1228,10 @@ export default [
     id: '76',
     name: 'Digital Media Fund',
     symbol: 'DMF',
-    value: 167.45,
-    currency: 'EUR',
+    value: {
+      amount: 167.45,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.09,
@@ -1086,8 +1244,10 @@ export default [
     id: '77',
     name: 'Global Water Fund',
     symbol: 'GWF',
-    value: 142.34,
-    currency: 'USD',
+    value: {
+      amount: 142.34,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.04,
@@ -1100,8 +1260,10 @@ export default [
     id: '78',
     name: 'Cyber Defense Fund',
     symbol: 'CDF',
-    value: 189.99,
-    currency: 'EUR',
+    value: {
+      amount: 189.99,
+      currency: 'EUR',
+    },
     category: 'TECH',
     profitability: {
       YTD: 0.13,
@@ -1114,8 +1276,10 @@ export default [
     id: '79',
     name: 'Global Supply Chain',
     symbol: 'GSC',
-    value: 155.67,
-    currency: 'USD',
+    value: {
+      amount: 155.67,
+      currency: 'EUR',
+    },
     category: 'GLOBAL',
     profitability: {
       YTD: 0.08,
@@ -1128,8 +1292,10 @@ export default [
     id: '80',
     name: 'Digital Health Fund',
     symbol: 'DHF',
-    value: 175.89,
-    currency: 'EUR',
+    value: {
+      amount: 175.89,
+      currency: 'EUR',
+    },
     category: 'HEALTH',
     profitability: {
       YTD: 0.12,
@@ -1138,4 +1304,4 @@ export default [
       fiveYears: 0.73,
     },
   },
-] as ReadonlyArray<Fund>;
+] satisfies ReadonlyArray<Fund>;
