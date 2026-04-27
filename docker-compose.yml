@@ -1,0 +1,35 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/funds"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=/api
+      # Esto me ha dado un dolorcillo de cabeza bonachón lo del proxy de Vite. 
+      - API_PROXY_TARGET=http://server:3000
+    depends_on:
+      server:
+        condition: service_healthy
+    volumes:
+      # Esto es para tener hot reload; que estoy acostumbrado
+      - ./client/src:/app/src
+      - ./client/public:/app/public

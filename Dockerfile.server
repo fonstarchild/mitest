@@ -1,0 +1,20 @@
+FROM node:24-alpine AS base
+
+WORKDIR /app
+
+# Activar corepack para usar la versión de yarn del proyecto
+RUN corepack enable && corepack prepare yarn@4.5.1 --activate
+
+# Copiar configuración de yarn antes que el código
+COPY .yarnrc.yml ./
+COPY .yarn/releases ./.yarn/releases
+COPY package.json yarn.lock ./
+
+RUN yarn install --immutable
+
+COPY server ./server
+COPY tsconfig.json ./
+
+EXPOSE 3000 3001
+
+CMD ["node", "--watch", "server/app.ts"]
