@@ -16,12 +16,13 @@ type Props = {
   portfolioItems: PortfolioItem[]
   isOpen: boolean
   onClose: () => void
+  onSuccess?: (amount: number, destFundName: string) => void
 }
 
 const fmtCurrency = (amount: number, currency: string) =>
   new Intl.NumberFormat('es-ES', { style: 'currency', currency }).format(amount)
 
-export function TransferDialog({ item, portfolioItems, isOpen, onClose }: Props) {
+export function TransferDialog({ item, portfolioItems, isOpen, onClose, onSuccess }: Props) {
   const queryClient = useQueryClient()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
@@ -61,6 +62,7 @@ export function TransferDialog({ item, portfolioItems, isOpen, onClose }: Props)
       queryClient.invalidateQueries({ queryKey: ['portfolio'] })
       const destName = portfolioItems.find((p) => p.id === vars.toFundId)?.name ?? 'destino'
       toast.show({ type: 'success', message: `Traspaso de ${item.name} a ${destName} completado` })
+      onSuccess?.(vars.amount, destName)
       reset()
       onClose()
     },

@@ -24,12 +24,13 @@ type Props = {
   fund: Fund
   isOpen: boolean
   onClose: () => void
+  onSuccess?: (amount: number) => void
 }
 
 const fmtCurrency = (amount: number, currency: string) =>
   new Intl.NumberFormat('es-ES', { style: 'currency', currency }).format(amount)
 
-export function BuyDialog({ fund, isOpen, onClose }: Props) {
+export function BuyDialog({ fund, isOpen, onClose, onSuccess }: Props) {
   const queryClient = useQueryClient()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
@@ -49,9 +50,10 @@ export function BuyDialog({ fund, isOpen, onClose }: Props) {
       const units = amount / fund.value.amount
       return buyFund(fund.id, units)
     },
-    onSuccess: () => {
+    onSuccess: (_res, amount) => {
       queryClient.invalidateQueries({ queryKey: ['portfolio'] })
       toast.show({ type: 'success', message: `Compra de ${fund.name} realizada con éxito` })
+      onSuccess?.(amount)
       reset()
       onClose()
     },

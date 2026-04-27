@@ -8,7 +8,9 @@ import { BuyDialog } from '@/features/funds/BuyDialog'
 import { SellDialog } from './SellDialog'
 import { TransferDialog } from './TransferDialog'
 import { PortfolioChart } from './PortfolioChart'
+import { OrdersTab } from './OrdersTab'
 import { useDisclosure } from '@/hooks/useDisclosure'
+import { useOrderHistory } from '@/hooks/useOrderHistory'
 import type { PortfolioItem, Category } from '@/types'
 
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -30,6 +32,8 @@ export function PortfolioView() {
   const sellDisclosure = useDisclosure()
   const transferDisclosure = useDisclosure()
   const buyDisclosure = useDisclosure()
+
+  const { orders, addOrder, clearOrders } = useOrderHistory()
 
   const { data: buyFundData } = useQuery({
     queryKey: ['fund', buyFundId],
@@ -158,10 +162,7 @@ export function PortfolioView() {
         )}
 
         {activeTab === 'Órdenes' && (
-          <EmptyState>
-            <EmptyIcon aria-hidden="true">📋</EmptyIcon>
-            <p>No hay órdenes registradas.</p>
-          </EmptyState>
+          <OrdersTab orders={orders} onClear={clearOrders} />
         )}
       </TabPanel>
 
@@ -173,6 +174,9 @@ export function PortfolioView() {
             buyDisclosure.close()
             setBuyFundId(null)
           }}
+          onSuccess={(amount) =>
+            addOrder({ type: 'buy', fundName: buyFundData.data.name, amount, currency: buyFundData.data.value.currency })
+          }
         />
       )}
 
@@ -185,6 +189,9 @@ export function PortfolioView() {
               sellDisclosure.close()
               setActiveItem(null)
             }}
+            onSuccess={(amount) =>
+              addOrder({ type: 'sell', fundName: activeItem.name, amount, currency: activeItem.totalValue.currency })
+            }
           />
           <TransferDialog
             item={activeItem}
@@ -194,6 +201,9 @@ export function PortfolioView() {
               transferDisclosure.close()
               setActiveItem(null)
             }}
+            onSuccess={(amount, destFundName) =>
+              addOrder({ type: 'transfer', fundName: activeItem.name, amount, currency: activeItem.totalValue.currency, destFundName })
+            }
           />
         </>
       )}

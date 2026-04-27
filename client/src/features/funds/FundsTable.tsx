@@ -9,6 +9,7 @@ import { Button } from '@/components/Button'
 import { BuyDialog } from './BuyDialog'
 import { useSortState } from '@/hooks/useSortState'
 import { useDisclosure } from '@/hooks/useDisclosure'
+import { useOrderHistory } from '@/hooks/useOrderHistory'
 import type { Fund, SortField } from '@/types'
 
 const PAGE_SIZE = 10
@@ -47,6 +48,7 @@ export function FundsTable() {
   const [activeFund, setActiveFund] = useState<Fund | null>(null)
   const buyDisclosure = useDisclosure()
   const { sort, toggle } = useSortState()
+  const { addOrder } = useOrderHistory()
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['funds', page, sort],
@@ -228,6 +230,9 @@ export function FundsTable() {
             buyDisclosure.close()
             setActiveFund(null)
           }}
+          onSuccess={(amount) =>
+            addOrder({ type: 'buy', fundName: activeFund.name, amount, currency: activeFund.value.currency })
+          }
         />
       )}
     </Wrapper>

@@ -30,6 +30,19 @@ export type PortfolioItem = {
   totalValue: Amount
 }
 
+export type OrderType = 'buy' | 'sell' | 'transfer'
+
+export type Order = {
+  id: string
+  type: OrderType
+  fundName: string
+  amount: number
+  currency: string
+  /** Solo en traspasos */
+  destFundName?: string
+  createdAt: string // ISO 8601
+}
+
 export type SortField =
   | 'name'
   | 'currency'

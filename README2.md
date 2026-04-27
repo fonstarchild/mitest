@@ -124,3 +124,10 @@ El proxy de Vite (`/api → server:3000`) se configura vía variable de entorno 
 - **Internacionalización.** Los textos están en español hardcodeado. Si esto fuera un producto real, habría usado `react-i18next` desde el principio.
 
 - **Error boundaries.** Hay manejo de errores a nivel de query pero no un boundary global que capture errores de renderizado inesperados.
+
+---
+
+## Añadidos
+
+He jugado un pelín con el Recharts y también con el localStorage para simular el "ordenes". Lo veía en la imagen y pensé "mira, tampoco es que me vaya a llevar un tiempo loquísimo". Esta última parte ha sido más acelerada de la cuenta, pero sin temor ninguno. Le metí una buena batería de tests unitarios.
+
