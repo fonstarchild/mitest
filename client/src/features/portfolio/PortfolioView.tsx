@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import styled from 'styled-components'
 import { getPortfolio, getFund } from '@/api/funds'
 import { ActionsMenu } from '@/components/ActionsMenu'
-import { Spinner, SpinnerOverlay } from '@/components/Spinner'
+import { PortfolioRowSkeleton } from '@/components/Skeleton'
 import { BuyDialog } from '@/features/funds/BuyDialog'
 import { SellDialog } from './SellDialog'
 import { TransferDialog } from './TransferDialog'
@@ -85,11 +85,9 @@ export function PortfolioView() {
       >
         {activeTab === 'Fondos' && (
           <>
-            {isLoading && (
-              <SpinnerOverlay>
-                <Spinner />
-              </SpinnerOverlay>
-            )}
+            {isLoading && Array.from({ length: 4 }).map((_, i) => (
+              <PortfolioRowSkeleton key={i} />
+            ))}
             {isError && (
               <ErrorMsg role="alert">No se ha podido cargar la cartera.</ErrorMsg>
             )}

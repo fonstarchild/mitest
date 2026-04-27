@@ -28,9 +28,11 @@ describe('FundsTable', () => {
     expect(within(nameHeader).getByRole('button')).toBeInTheDocument()
   })
 
-  it('shows loading state while fetching', () => {
+  it('shows skeleton rows while fetching', () => {
     renderWithProviders(<FundsTable />)
-    expect(screen.getByRole('status')).toBeInTheDocument()
+    // La tabla ya está montada; las filas skeleton están ocultas a AT con aria-hidden
+    expect(screen.getByRole('table')).toBeInTheDocument()
+    expect(document.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0)
   })
 
   it('opens buy dialog when "Comprar" action is clicked', async () => {

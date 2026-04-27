@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { getFunds } from '@/api/funds'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import { ProfitabilityCell } from '@/components/ProfitabilityCell'
-import { Spinner, SpinnerOverlay } from '@/components/Spinner'
+import { FundsTableRowSkeleton } from '@/components/Skeleton'
 import { Button } from '@/components/Button'
 import { BuyDialog } from './BuyDialog'
 import { useSortState } from '@/hooks/useSortState'
@@ -59,14 +59,6 @@ export function FundsTable() {
       }),
     placeholderData: (prev) => prev,
   })
-
-  if (isLoading) {
-    return (
-      <SpinnerOverlay>
-        <Spinner />
-      </SpinnerOverlay>
-    )
-  }
 
   if (isError) {
     return <ErrorMsg role="alert">No se han podido cargar los fondos. Inténtalo de nuevo.</ErrorMsg>
@@ -150,6 +142,9 @@ export function FundsTable() {
             </tr>
           </thead>
           <tbody>
+            {isLoading && Array.from({ length: 6 }).map((_, i) => (
+              <FundsTableRowSkeleton key={i} />
+            ))}
             {funds.map((fund) => (
               <Row key={fund.id}>
                 <Td>
